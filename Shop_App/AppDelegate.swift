@@ -7,15 +7,20 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    let APP_ID = "0074EF4F-F599-F4D7-FFB0-C0C2237F7F00"
+    let API_KEY = "13FBE098-8730-0DF0-FFB2-49D7BF982900"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        FirebaseApp.configure()
+        backendless!.initApp(APP_ID, apiKey: API_KEY)
         return true
     }
 

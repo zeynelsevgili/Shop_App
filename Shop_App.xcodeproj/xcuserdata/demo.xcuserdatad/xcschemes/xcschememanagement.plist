@@ -7,7 +7,25 @@
 		<key>Shop_App.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>13</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>B40D078C21F49C2D00B6A9E8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B40D07A021F49C2D00B6A9E8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B40D07AB21F49C2D00B6A9E8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
