@@ -163,6 +163,8 @@ class FUser {
                 if user != nil && user!.firstName != "" {
                     
                     saveUserLocally(user: user!)
+                    // bu fonksiyonun completionu true ise mainView kısmına dönülecek
+                    // çünkü zaten kişi kayıtlı
                     completion(error, true)
 
                 }else {
@@ -173,6 +175,9 @@ class FUser {
                     
                     saveUserLocally(user: fUser)
                     saveUserInBackground(fuser: fUser)
+                    
+                    // bu fonksiyonun completionu false ise finishRegisterView kısmına dönülecek
+                    // kişi kayıtlı değil de ondan...
                     completion(error, false)
 
                 }
@@ -247,7 +252,7 @@ func fetchUserWith(userID: String, completion: @escaping (_ user: FUser?) -> Voi
             
             // bir array aldığımız için allValues diyoruz
             // firstObject kısmı anlaşılamadı???
-            let userDictionary = ((snapshot.value as! NSDictionary).allValues as! NSArray).firstObject as! NSDictionary
+            let userDictionary = ((snapshot.value as! NSDictionary).allValues as NSArray).firstObject as! NSDictionary
             
             let user = FUser(_dictionary: userDictionary)
             
@@ -287,7 +292,7 @@ func userDictionaryFrom(user: FUser) -> NSDictionary{
     
     //şu tarzda bir değer dönüyoruz ----> return NSDictionary(objects: [] , forKeys: [])
     
-    return NSDictionary(objects: [user.objectID, user.pushID, createAt, updateAt, user.firstName, user.lastName, user.avatar, user.phoneNumber, user.coins, user.fullName, user.isAgent, user.companyName, user.favouriteProperties, user.additionalPhone], forKeys: [kOBJECTID as NSCopying, kPUSHID as NSCopying,  kCREATEDAT as NSCopying, kUPDATEDAT as NSCopying, kFIRSTNAME as NSCopying, kLASTNAME as NSCopying, kAVATAR as NSCopying, kPHONE as NSCopying, kCOINS as NSCopying, kFULLNAME as NSCopying, kISAGENT as NSCopying, kCOMPANY as NSCopying, kFAVORIT as NSCopying, kADDPHONE as NSCopying])
+    return NSDictionary(objects: [user.objectID, user.pushID!, createAt, updateAt, user.firstName, user.lastName, user.avatar, user.phoneNumber, user.coins, user.fullName, user.isAgent, user.companyName, user.favouriteProperties, user.additionalPhone], forKeys: [kOBJECTID as NSCopying, kPUSHID as NSCopying,  kCREATEDAT as NSCopying, kUPDATEDAT as NSCopying, kFIRSTNAME as NSCopying, kLASTNAME as NSCopying, kAVATAR as NSCopying, kPHONE as NSCopying, kCOINS as NSCopying, kFULLNAME as NSCopying, kISAGENT as NSCopying, kCOMPANY as NSCopying, kFAVORIT as NSCopying, kADDPHONE as NSCopying])
     
 
     

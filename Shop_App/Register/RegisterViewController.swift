@@ -39,7 +39,7 @@ class RegisterViewController: UIViewController {
                 
                 if(error != nil) {
                     
-                    print("registerWith email kısmında bir hata meydana geldi:\(error?.localizedDescription)")
+                    print("registerWith email kısmında bir hata meydana geldi:\(String(describing: error?.localizedDescription))")
                     
                     // hata olursa aşağıdaki satırlar icra edilmeyecek
                     return
