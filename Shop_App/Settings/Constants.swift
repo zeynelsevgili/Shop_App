@@ -37,3 +37,12 @@ public let kISONLINE = "isOnline"
 public let kVERIFICATIONCODE = "firebase_verification"
 public let kISAGENT = "isAgent"
 public let kFAVORIT = "favoritProperties"
+
+// Property
+
+public let kMAXIMAGENUMBER = 10
+public let kRECENTPROPERTYLIMIT = 15
+
+
+// ID's and KEYS
+public let kFILEREFERENCE = "gs://shopappguncel.appspot.com/"

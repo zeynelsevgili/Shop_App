@@ -10,10 +10,11 @@ import Foundation
 
 @objcMembers
 class Property: NSObject {
+    // hepsi optional veya değer atanmış olduğu için initializer'a gerek duyulmuyor.
     
-    var objectID: String?
     var referenceCode: String?
-    var ownerID: String?
+    var title: String?
+    var ownerId: String?
     var numOfRooms: Int = 0;
     var numOfBathRooms: Int = 0
     var size: Double = 0.0
@@ -36,28 +37,36 @@ class Property: NSObject {
     var centralHeating: Bool = false
     var solarWaterSystem: Bool = false
     var airConditioner: Bool = false
-    var storeRoom: Bool = false
+    //var storeRoom: Bool = false
     var isFurnished: Bool = false
     var isSold: Bool = false
     var inTopUntil: Date?
-    
+
     //MARK: Save Functions
-    
-    // burası çok önemli altın değerinde viewController da oluşturduğumuz array nasıl kayıt ediyor???
-    // save property diyor. Parametre yok nasıl save edecek???
-    // aşağıdaki tablolarda "property: Property" diye parametre almış. Bu da acaba ona benzer mi?
-    // denemesi yapılırken mutlaka dene aynı kapıya çıkıyorsa sorun yok. iki farklı kullanım vardır.
     func saveProperty() {
-        
-        // Property class ı ile ilgili bir tablo oluşturur backendless da.
+        print("backendless başlangıcı")
         let dataStore = backendless!.data.of(Property.ofClass())
-        dataStore!.save(self)
-        
+        print("backendless instance oluşturuluduktan sonra")
+
+        dataStore?.save(self, response: { (response) in
+            
+            if response != nil {
+                
+                print("success")
+            }
+            
+            
+        }, error: { (fault: Fault?) in
+            
+            print("hata yapıldı:\(fault.debugDescription)")
+        })
+
     }
+
     
     func saveProperty(completion: @escaping (_ value: String) -> Void) {
         
-        let dataStore = backendless!.data.of(Property.ofClass())
+        let dataStore = backendless!.data.of(Property().ofClass())
         dataStore!.save(self, response: { (result) in
             
             completion("kaydetme tamamlandı")
@@ -79,6 +88,8 @@ class Property: NSObject {
         
     }
     
+    // burada parametre olarak Property alıyor. Dönüş String oluyor.
+    // Muhtemelen silindi diye ekrana yansıtacak.
     func deleteProperty(property: Property, completion: @escaping (_ value: String) -> Void) {
         
         let dataStore = backendless!.data.of(property.ofClass())
@@ -95,6 +106,8 @@ class Property: NSObject {
         
     }
     
+    
+    // inTopUntil database kısmına yerleştirilmezse fetch edilmeyebilir dikkat et
     class func fetchRecentProperties(limit: Int, completion: @escaping (_ properties: [Property?]) -> Void) {
         
         let queryBuilder = DataQueryBuilder()
@@ -110,7 +123,7 @@ class Property: NSObject {
             completion(backendlessResponse as! [Property])
         }) { (fault: Fault?) in
             
-            print("limitli search yapılırken bir hata meydana geldi.\(fault!.message)")
+            print("limitli search yapılırken bir hata meydana geldi.\(fault!.debugDescription)")
             completion([])
             
         }
@@ -118,15 +131,43 @@ class Property: NSObject {
         
     }
     
+    class func fetchAllProperties(completion: @escaping (_ properties: [Property]) -> Void) {
+        
+        let dataStore = backendless!.data.of(Property().ofClass())
+        
+        dataStore!.find({ (allProperties) in
+            
+            completion(allProperties as! [Property])
+            
+            
+        }) { (fault: Fault?) in
+            
+            print("Bütün hepsini getirirken hata meydana geldi\(fault!.message)")
+            completion([])
+            
+            
+        }
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
+    class func fetchPropertiesWithWhereClouse(whereClouse: String, completion: @escaping (_ properties: [Property]) -> Void) {
+        
+        let queryBuilder = DataQueryBuilder()
+        queryBuilder!.setWhereClause(whereClouse)
+        queryBuilder!.setSortBy(["inTopUntil DESC"])
+        
+        let dataStore = backendless!.data.of(Property().ofClass())
+        dataStore!.find(queryBuilder, response: { (backendlessResponse) in
+            completion(backendlessResponse as! [Property])
+            
+        }) { (fault: Fault?) in
+            
+            print("where tümcesiyle search edilirken hata meydana geldi\(fault!.message)")
+            completion([])
+        }
+        
+        
+    }
+   
 }
 
 

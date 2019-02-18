@@ -28,6 +28,7 @@ class FUser {
     var favouriteProperties: [String]
     
     // yukarıdakilerin hepsi initialize edilmezse hata veriyor.
+    // optional olanlar initialize edilmeyebilir!
     init(_objectID: String, _pushID: String?, _createdID: Date, _updatedID: Date, _firstName: String, _lastName: String, _avatar: String = "", _phoneNumber: String = "") {
         
         objectID = _objectID
@@ -52,6 +53,8 @@ class FUser {
     
     
     // NSDictionary formatındaki bilgi, Firebase den alındıktan sonraki initializerdır bu...
+    // NSDictionary türünde firebase den gelen bilgi her bir instance değişkenine ayrı ayrı atanıyor.
+    
     init(_dictionary: NSDictionary) {
         
         objectID = _dictionary[kOBJECTID] as! String
@@ -267,7 +270,9 @@ func fetchUserWith(userID: String, completion: @escaping (_ user: FUser?) -> Voi
     
 }
 
-
+// hem local hem background(firebase) kısmına
+// verileri kaydetmek için Dictionary formatında veri göndermemiz gerekir.
+// bundan ötürü ortak bir fonksiyon(userDictionaryFrom --> NSDictionary oluşturuldu)
 func saveUserInBackground(fuser: FUser) {
     
     let ref = firebaseDatabase.child(kUSER).child(fuser.objectID)
@@ -293,11 +298,44 @@ func userDictionaryFrom(user: FUser) -> NSDictionary{
     //şu tarzda bir değer dönüyoruz ----> return NSDictionary(objects: [] , forKeys: [])
     
     return NSDictionary(objects: [user.objectID, user.pushID!, createAt, updateAt, user.firstName, user.lastName, user.avatar, user.phoneNumber, user.coins, user.fullName, user.isAgent, user.companyName, user.favouriteProperties, user.additionalPhone], forKeys: [kOBJECTID as NSCopying, kPUSHID as NSCopying,  kCREATEDAT as NSCopying, kUPDATEDAT as NSCopying, kFIRSTNAME as NSCopying, kLASTNAME as NSCopying, kAVATAR as NSCopying, kPHONE as NSCopying, kCOINS as NSCopying, kFULLNAME as NSCopying, kISAGENT as NSCopying, kCOMPANY as NSCopying, kFAVORIT as NSCopying, kADDPHONE as NSCopying])
-    
 
+}
+
+// 2. Anlaşılmadı.
+func updateCurrentUser(withValues: [String: Any], withBlock: @escaping (_ success: Bool)->Void) {
+    
+    if UserDefaults.standard.object(forKey: kCURRENTUSER) != nil {
+        
+        let currentUser = FUser.currentUser()!
+        
+        // NSMutableDictionary: An object representing a dynamic collection of key-value pairs
+        // burafa bir FUser objesi koyacağız çıkış olarak key-value pairi elde edeceğiz.
+        let userObject = userDictionaryFrom(user: currentUser).mutableCopy() as! NSMutableDictionary
+        // burada mevcut key-value pairli OBJE'mize, bir key-value stringi daha ekleyeceğiz
+        userObject.setValuesForKeys(withValues)
+        let ref = firebaseDatabase.child(kUSER).child(currentUser.objectID)
+        
+        ref.updateChildValues(withValues, withCompletionBlock: { (error, ref) in
+            
+            if error != nil {
+                withBlock(false)
+                return
+            }
+            
+            UserDefaults.standard.setValue(userObject, forKey: kCURRENTUSER)
+            UserDefaults.standard.synchronize()
+            withBlock(true)
+            
+        })
+    }
     
     
 }
+
+
+
+
+
 
 
 

@@ -16,11 +16,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let APP_ID = "0074EF4F-F599-F4D7-FFB0-C0C2237F7F00"
     let API_KEY = "13FBE098-8730-0DF0-FFB2-49D7BF982900"
-
+//        let APP_ID = "84BFAE23-52D5-0B42-FF57-FC79DBA15200"
+//        let API_KEY = "E6C7A3D0-42B5-1DDE-FF57-AF5EB1887E00"
+    // aşağıdaki olabilir de olmayabilir
+    //let SERVER_URL = "https://api.backendless.com"
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
         backendless!.initApp(APP_ID, apiKey: API_KEY)
+        //backendless!.hostURL = SERVER_URL()
         return true
     }
 
